@@ -1,25 +1,42 @@
-package studentdatabaseapp;
-
-import java.util.Scanner;
-
 public class StudentDatabaseApp {
-
-	public static void main(String[] args) {
-		// Ask how many new students we want to add
-		System.out.println("Enter number of new students to enroll: ");
-		Scanner in = new Scanner(System.in);
-		int numOfStudents = in.nextInt();
-		Student[] students = new Student[numOfStudents];
-		
-		// Create n number of new students
-        for (int n = 0; n < numOfStudents; n++) {
-    		students[n] = new Student();
-    		students[n].enroll();
-    		students[n].payTuition();
-    		 
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            // Get number of students with input validation
+            int numOfStudents = getValidatedNumberOfStudents(scanner);
+            
+            // Create and process students
+            Student[] students = new Student[numOfStudents];
+            
+            for (int i = 0; i < numOfStudents; i++) {
+                System.out.println("\nEntering details for Student " + (i + 1));
+                students[i] = new Student(scanner);
+                students[i].enroll(scanner);
+                students[i].payTuition(scanner);
+            }
+            
+            // Display student information
+            System.out.println("\n--- Student Database ---");
+            for (Student student : students) {
+                System.out.println(student);
+                System.out.println(); // Extra line for readability
+            }
         }
-        for (int n = 0; n < numOfStudents; n++) {
-    		 System.out.println(students[n].toString());
-	}
-  }
+    }
+
+    // Validate number of students input
+    private static int getValidatedNumberOfStudents(Scanner scanner) {
+        while (true) {
+            try {
+                System.out.print("Enter number of new students to enroll: ");
+                int numOfStudents = Integer.parseInt(scanner.nextLine());
+                
+                if (numOfStudents > 0) {
+                    return numOfStudents;
+                }
+                System.out.println("Number of students must be positive.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
 }
